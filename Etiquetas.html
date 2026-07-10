@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Etiquetas de Precios</title>
+    <!-- ICONO AÑADIDO A LA PESTAÑA DEL NAVEGADOR -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABeElEQVR42mP4//8/AyUYQFABxADiLGCbQJyHTp8BQIB/gNgHiJtA3AeI/wHxR5B6HyAGAcT7AbE/EPcCsb8QCxC/B+I/QDz/D8Q/M5CC0c/QBAgA/gBiPyD+D8Q/gPg/EP8H4v8g9gcQ/wfi/0D8H4h/A/F/IP4PxP8h9QcQ/wfi/yD1P0D8H4j/A/F/IP4PxT9B6geI/wPx/yD1ByD+D8T/Qeo/QPwfiP8D8X8g/g/E/0HqXyD+D8T/geg/QPwfiP8D8X8g/g/E/yH1H0D8H4j/Q+ofIP4PxP+B+D8Q/wfinyD1AyAAYH8g/g/E/wHxfyD+D8T/Qeo/QPwfiP8D8X8g/g/E/yH1PyD+D8T/QeofIP4PxP+B+D8Q/wfinyD1HyD+D8T/Qeo/QPwfiP8D8X8g/g/E/0HqHyAAYD8g/g/E/wHxfyD+D8T/Qeo/QPwfiP8D8X8g/g/E/yH1PyD+D8T/QeofIP4PxP+B+D8Q/wfinyD1HyD+D8T/Qeo/QPwfiP8D8X8g/g/E/0Hq/xP9BwDSfQJ9EOgHkv4DQHyA+D8Q/wfi/0D8H4j/A/F/IP4PxP9B6g4g/g/E/wHxfyD+D8T/QeofIP4PxP+B+D8Q/wfi/yD1P0D8H4j/A/F/IP4PxP9hDkCAAEAGAEyU/wFs+gAAAABJRU5 in/ggg==" />
+    
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variables CSS para temas Claro y Oscuro (Azul Marino) */
+        :root {
+            --bg-color: #f1f5f9; /* Slate 100 */
+            --panel-bg: #ffffff;
+            --preview-bg: #f8fafc; /* Slate 50 */
+            --text-color: #0f172a; /* Slate 900 */
+            --text-secondary: #64748b; /* Slate 500 */
+            --border-color: #e2e8f0; /* Slate 200 */
+            --sheet-border: #cbd5e1; /* Slate 300 */
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --primary-color: #2563eb; /* Blue 600 */
+            --primary-hover: #1d4ed8; /* Blue 700 */
+            --danger-color: #ef4444; /* Red 500 */
+            --danger-hover: #dc2626; /* Red 600 */
+            --success-color: #10b981; /* Emerald 500 */
+            --success-hover: #059669; /* Emerald 600 */
+            --badge-bg: #e2e8f0;
+            --instructions-bg: #f8fafc;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+        }
+
+        body.dark-mode {
+            --bg-color: #0a0f1d; /* Azul Marino Muy Oscuro */
+            --panel-bg: #131b31; /* Azul Marino Intermedio */
+            --preview-bg: #131b31; /* Azul Marino Recesado */
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #1e2942;
+            --sheet-border: #2e3b56;
+            --input-bg: #0a0f1d;
+            --input-border: #1e2942;
+            --primary-color: #3b82f6;
+            --primary-hover: #60a5fa;
+            --danger-color: #f87171;
+            --danger-hover: #fca5a5;
+            --success-color: #34d399;
+            --success-hover: #6ee7b7;
+            --badge-bg: #131b31;
+            --instructions-bg: #0a0f1d;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+        }
+
+        /* Estilos generales */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .main-container {
+            display: flex;
+            flex-grow: 1;
+            padding: 24px;
+            gap: 24px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .controls-panel {
+            flex-basis: 400px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .preview-panel {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s;
+            position: relative;
+        }
+        
+        .header {
+            margin-bottom: 24px;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h1 {
+            font-size: 1.6em;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+        }
+        
+        .subtitle {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            margin-bottom: 0;
+            line-height: 1.4;
+        }
+
+        /* Botón de cambio de tema */
+        .theme-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            transition: background-color 0.2s, border-color 0.2s;
+            box-shadow: none;
+            flex-shrink: 0;
+        }
+        
+        .theme-toggle-btn:hover {
+            background-color: var(--border-color);
+        }
+        
+        .theme-toggle-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+        }
+
+        body.dark-mode .sun-icon {
+            display: block;
+        }
+        body.dark-mode .moon-icon {
+            display: none;
+        }
+        body:not(.dark-mode) .sun-icon {
+            display: none;
+        }
+        body:not(.dark-mode) .moon-icon {
+            display: block;
+        }
+
+        /* Instrucciones */
+        .instructions {
+            background-color: var(--instructions-bg);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .instructions ol {
+            padding-left: 18px;
+            margin-bottom: 0;
+            color: var(--text-secondary);
+            font-size: 0.8em;
+            line-height: 1.5;
+        }
+
+        /* Controles de entrada */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        
+        .input-label {
+            font-size: 0.8em;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #price-input {
+            width: 100%;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: 0.95em;
+            border-radius: 8px;
+            border: 1.5px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+            outline: none;
+        }
+        
+        #price-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        
+        #price-input.input-error {
+            border-color: var(--danger-color) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+        
+        .error-message {
+            font-size: 0.78em;
+            color: #ef4444;
+            font-weight: 500;
+            margin-bottom: 16px;
+            min-height: 18px;
+            transition: opacity 0.2s;
+            opacity: 0;
+        }
+        
+        .error-message.visible {
+            opacity: 1;
+        }
+
+        /* Botones */
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            font-family: inherit;
+            font-size: 0.9em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+        
+        #add-button {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+        }
+        
+        #add-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        
+        #add-button:active {
+            transform: translateY(0);
+        }
+        
+        #reset-button {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            margin-top: auto; /* Empuja el botón reiniciar al final de la columna */
+            box-shadow: none;
+        }
+        
+        #reset-button:hover {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        #generate-button {
+            background-color: var(--success-color);
+            color: white;
+            margin-top: 16px;
+        }
+        
+        #generate-button:hover {
+            background-color: var(--success-hover);
+            transform: translateY(-1px);
+        }
+        
+        #generate-button:active {
+            transform: translateY(0);
+        }
+
+        /* Vista previa */
+        .preview-badge {
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            background-color: var(--badge-bg);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        .sheet-wrapper {
+            width: 21.59cm; 
+            height: 27.94cm;
+            transform-origin: top center;
+            transition: transform 0.2s ease;
+        }
+
+        #preview-sheet {
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--sheet-border);
+            background-color: white !important;
+            padding: 1cm;
+            box-sizing: border-box;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(4, 3.7cm);
+            grid-auto-rows: 1.5cm;
+            justify-content: start;
+            align-content: start;
+            transition: border-color 0.3s;
+        }
+        
+        .price-tag {
+            width: 3.7cm;
+            height: 1.5cm;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24pt;
+            font-weight: bold;
+            overflow: hidden;
+            text-align: center;
+            background-color: white !important;
+            color: black !important;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        
+        .price-tag:hover {
+            background-color: #f1f5f9 !important;
+            border-color: #3b82f6 !important;
+        }
+        
+        /* Modal Estilos */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(21, 32, 63, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-content {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 28px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.2s ease, background-color 0.3s, border-color 0.3s;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        
+        .modal-content p {
+            font-size: 0.88em;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 24px;
+            margin-top: 0;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .modal-actions button {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 0.88em;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        /* Responsividad */
+        @media (max-width: 900px) {
+            body {
+                overflow: auto;
+                height: auto;
+            }
+            
+            .main-container {
+                flex-direction: column;
+                overflow: visible;
+                padding: 16px;
+                gap: 16px;
+            }
+            
+            .controls-panel {
+                flex-basis: auto;
+            }
+            
+            .preview-panel {
+                min-height: 500px;
+                height: auto;
+                padding: 16px;
+            }
+            
+            #reset-button {
+                margin-top: 16px;
+            }
+        }
+
+        @media print {
+            @page {
+                size: letter;
+                margin: 0;
+            }
+
+            body, .main-container, .preview-panel, .sheet-wrapper {
+                position: static !important;
+                transform: none !important;
+                width: auto !important;
+                height: auto !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                float: none !important;
+                display: block !important;
+                background: white !important;
+            }
+
+            body * {
+                visibility: hidden;
+            }
+
+            #preview-sheet, #preview-sheet * {
+                visibility: visible;
+            }
+
+            #preview-sheet {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 8.5in;
+                height: 11in;
+                border: none;
+                box-shadow: none;
+                padding: 1cm;
+                box-sizing: border-box;
+                display: grid;
+                grid-template-columns: repeat(4, 3.7cm);
+                grid-auto-rows: 1.5cm;
+                justify-content: start;
+                align-content: start;
+                background-color: white !important;
+                color: black !important;
+            }
+            
+            .price-tag {
+                border: 1px solid #ccc !important;
+                background-color: white !important;
+                color: black !important;
+            }
+        }
+    </style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_ApprovalStatus msdt:dt="string">0</mso:_ApprovalStatus>
+<mso:_ApprovalAssignedTo msdt:dt="string"></mso:_ApprovalAssignedTo>
+<mso:_ApprovalRespondedBy msdt:dt="string"></mso:_ApprovalRespondedBy>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <div class="controls-panel">
+            <div class="header">
+                <div class="header-top">
+                    <h1>Generador de etiquetas</h1>
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema">
+                        <!-- Sun Icon -->
+                        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <!-- Moon Icon -->
+                        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <p class="subtitle">Si tienes algún problema, contacta a tu visual asignado</p>
+            </div>
+            
+            <div class="instructions">
+                <h3>Instrucciones</h3>
+                <ol>
+                    <li>Ingresa un precio en el campo de abajo.</li>
+                    <li>Presiona <b>"Enter"</b> o haz clic en <b>"Agregar"</b>.</li>
+                    <li>El precio aparecerá en la hoja (máx. 40).</li>
+                    <li>Usa <b>"Doble clic"</b> sobre una etiqueta para eliminarla.</li>
+                    <li>Cuando termines, usa <b>"Generar PDF"</b>.</li>
+                </ol>
+            </div>
+            
+            <div class="input-group">
+                <label for="price-input" class="input-label">Ingresar precio</label>
+                <input type="text" id="price-input" placeholder="Ej: $1,234.56">
+            </div>
+            <div id="error-message" class="error-message"></div>
+            
+            <button id="add-button" onclick="addPriceTag()">Agregar</button>
+            <button id="reset-button" onclick="resetSheet()">Reiniciar hoja</button>
+        </div>
+
+        <div class="preview-panel" id="preview-container">
+            <div class="preview-badge">Vista previa de impresión</div>
+            <div class="sheet-wrapper" id="sheet-wrapper">
+                <div id="preview-sheet">
+                    <!-- Las etiquetas se agregarán aquí -->
+                </div>
+            </div>
+            <button id="generate-button" onclick="generatePDF()">Generar PDF</button>
+        </div>
+
+    </div>
+
+    <!-- Modal de Confirmación Personalizado (nativo de la página) -->
+    <div id="confirm-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>¿Reiniciar hoja?</h3>
+            <p>Se borrarán de forma permanente todas las etiquetas de precio de la hoja actual.</p>
+            <div class="modal-actions">
+                <button id="confirm-cancel" class="btn-secondary">Cancelar</button>
+                <button id="confirm-accept" class="btn-danger">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const priceInput = document.getElementById('price-input');
+        const previewSheet = document.getElementById('preview-sheet');
+        const sheetWrapper = document.getElementById('sheet-wrapper');
+        const previewContainer = document.getElementById('preview-container');
+        const generateButton = document.getElementById('generate-button');
+        const errorMessage = document.getElementById('error-message');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        
+        // Modal de confirmación
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmCancel = document.getElementById('confirm-cancel');
+        const confirmAccept = document.getElementById('confirm-accept');
+        let onConfirmAction = null;
+
+        // Tema oscuro logic
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.body.classList.add('dark-mode');
+        }
+        
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // Mostrar error inline
+        function showError(msg) {
+            errorMessage.textContent = msg;
+            errorMessage.classList.add('visible');
+            priceInput.classList.add('input-error');
+            setTimeout(() => {
+                errorMessage.classList.remove('visible');
+                priceInput.classList.remove('input-error');
+            }, 3000);
+        }
+
+        function scalePreview() {
+            const containerHeight = previewContainer.clientHeight - 100;
+            const containerWidth = previewContainer.clientWidth;
+            
+            const wrapperWidth = sheetWrapper.offsetWidth;
+            const wrapperHeight = sheetWrapper.offsetHeight;
+
+            if (wrapperWidth > 0 && wrapperHeight > 0) {
+                const scale = Math.min(
+                    containerWidth / wrapperWidth,
+                    containerHeight / wrapperHeight
+                );
+                sheetWrapper.style.transform = `scale(${scale * 0.95})`;
+
+                const scaledWidth = wrapperWidth * (scale * 0.95);
+                generateButton.style.width = `${scaledWidth}px`;
+            }
+        }
+
+        window.addEventListener('load', scalePreview);
+        window.addEventListener('resize', scalePreview);
+        
+        priceInput.addEventListener('input', function(event) {
+            const validPattern = /^[\$0-9,.]*$/;
+            if (!validPattern.test(this.value)) {
+                this.classList.add('input-error');
+                setTimeout(() => this.classList.remove('input-error'), 400);
+                this.value = this.value.slice(0, -1);
+            }
+        });
+
+        priceInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addPriceTag();
+            }
+        });
+
+        function addPriceTag() {
+            let price = priceInput.value;
+            if (price) {
+                let cleanValue = price.replace(/[$,]/g, '');
+                let numberValue = parseFloat(cleanValue);
+
+                if (!isNaN(numberValue) && previewSheet.children.length < 40) {
+                    const formattedPrice = numberValue.toLocaleString('en-US');
+
+                    const priceTag = document.createElement('div');
+                    priceTag.className = 'price-tag';
+                    priceTag.textContent = '$' + formattedPrice; 
+                    priceTag.title = 'Doble clic para eliminar';
+                    
+                    // Ajustar tamaño de fuente dinámicamente según la longitud del texto
+                    const textLen = priceTag.textContent.length;
+                    if (textLen > 6) {
+                        // Escala lineal de fuente
+                        // 6 chars: 24pt
+                        // 7 chars: ~22.4pt
+                        // 8 chars: ~20.8pt
+                        // 9 chars: ~19.2pt
+                        // 10 chars: ~17.6pt
+                        // 11 chars: ~16.0pt
+                        // 12 chars: ~14.4pt
+                        // 13 chars: ~12.8pt
+                        // 14+ chars: 11pt (tamaño mínimo)
+                        const size = Math.max(11, 24 - (textLen - 6) * 1.6);
+                        priceTag.style.fontSize = size + 'pt';
+                    }
+                    
+                    // Eliminar etiqueta individualmente con doble clic
+                    priceTag.addEventListener('dblclick', function() {
+                        this.remove();
+                    });
+
+                    previewSheet.appendChild(priceTag);
+                    
+                    priceInput.value = '';
+                    priceInput.focus();
+                } else if (previewSheet.children.length >= 40) {
+                    showError('La hoja está llena (máximo 40 etiquetas).');
+                } else {
+                    showError('Por favor, ingresa un precio válido.');
+                }
+            } else {
+                showError('Por favor, ingresa un precio.');
+            }
+        }
+
+        // Lógica del modal de confirmación personalizado
+        function showConfirmDialog(onAccept) {
+            onConfirmAction = onAccept;
+            confirmModal.classList.add('active');
+        }
+
+        confirmCancel.addEventListener('click', () => {
+            confirmModal.classList.remove('active');
+            onConfirmAction = null;
+        });
+
+        confirmAccept.addEventListener('click', () => {
+            if (onConfirmAction) {
+                onConfirmAction();
+            }
+            confirmModal.classList.remove('active');
+            onConfirmAction = null;
+        });
+
+        confirmModal.addEventListener('click', (e) => {
+            if (e.target === confirmModal) {
+                confirmModal.classList.remove('active');
+                onConfirmAction = null;
+            }
+        });
+
+        function resetSheet() {
+            showConfirmDialog(() => {
+                previewSheet.innerHTML = '';
+            });
+        }
+        
+        function generatePDF() {
+            window.print();
+        }
+    </script>
+
+</body>
+</html>
