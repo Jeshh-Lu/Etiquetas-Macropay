@@ -12,7 +12,7 @@ Una herramienta web minimalista, moderna y de alto rendimiento diseñada especí
 *   **Gestión Interactiva de Etiquetas**:
     *   Ingreso rápido con validación de caracteres en tiempo real (solo acepta números, puntos, comas y `$`).
     *   Formateo automático de miles usando la configuración local (`toLocaleString`).
-    *   Eliminación individual de etiquetas haciendo **doble clic** directamente sobre la etiqueta en la vista previa.
+    *   Eliminación individual de etiquetas haciendo **doble clic** o **clic central** (ruedita del mouse) directamente sobre la etiqueta en la vista previa.
     *   Modal personalizado para confirmar el reinicio completo de la hoja, previniendo borrados accidentales.
 *   **Optimización de Impresión**: Reglas `@media print` configuradas para ocultar automáticamente el panel de control y centrar la hoja de etiquetas de manera exacta.
 *   **Privacidad Absoluta**: Todo el procesamiento se realiza localmente en el cliente. Ninguna información es transmitida a internet.
@@ -46,12 +46,12 @@ No requiere de servidores ni bases de datos. Simplemente clona este repositorio 
    ```bash
    cd Etiquetas-Macropay
    ```
-3. Abre [Etiquetas.html](Etiquetas.html) en tu navegador (puedes hacer doble clic sobre el archivo o arrastrarlo a una ventana abierta del navegador).
+3. Abre [index.html](index.html) en tu navegador (puedes hacer doble clic sobre el archivo o arrastrarlo a una ventana abierta del navegador).
 
 ### Guía de Operación
 1. Introduce un precio en el campo **"Ingresar precio"** (ej: `1234.56`). El sistema le añadirá formato de moneda automáticamente.
 2. Presiona **Enter** o haz clic en **"Agregar"** para colocar la etiqueta en la hoja.
-3. Si te equivocas, haz **doble clic** sobre la etiqueta que deseas remover dentro de la vista previa.
+3. Si te equivocas, haz **doble clic** o **clic central** (ruedita del mouse) sobre la etiqueta que deseas remover dentro de la vista previa.
 4. Para limpiar la hoja completa, usa el botón **"Reiniciar hoja"** y acepta en el modal emergente.
 5. Cuando tengas tus etiquetas listas, haz clic en **"Generar PDF"**.
    * *Nota de Impresión:* En el cuadro de diálogo de tu navegador, asegúrate de configurar los **márgenes como "Ninguno" o "Predeterminado"** y la **escala al 100%** para conservar las dimensiones exactas en centímetros.

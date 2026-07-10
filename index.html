@@ -597,7 +597,7 @@
                     <li>Ingresa un precio en el campo de abajo.</li>
                     <li>Presiona <b>"Enter"</b> o haz clic en <b>"Agregar"</b>.</li>
                     <li>El precio aparecerá en la hoja (máx. 40).</li>
-                    <li>Usa <b>"Doble clic"</b> sobre una etiqueta para eliminarla.</li>
+                    <li>Usa <b>"Doble clic"</b> o <b>clic central</b> sobre una etiqueta para eliminarla.</li>
                     <li>Cuando termines, usa <b>"Generar PDF"</b>.</li>
                 </ol>
             </div>
@@ -726,7 +726,7 @@
                     const priceTag = document.createElement('div');
                     priceTag.className = 'price-tag';
                     priceTag.textContent = '$' + formattedPrice; 
-                    priceTag.title = 'Doble clic para eliminar';
+                    priceTag.title = 'Doble clic o clic central para eliminar';
                     
                     // Ajustar tamaño de fuente dinámicamente según la longitud del texto
                     const textLen = priceTag.textContent.length;
@@ -748,6 +748,14 @@
                     // Eliminar etiqueta individualmente con doble clic
                     priceTag.addEventListener('dblclick', function() {
                         this.remove();
+                    });
+
+                    // Eliminar etiqueta individualmente con el botón central del mouse (ruedita)
+                    priceTag.addEventListener('mousedown', function(event) {
+                        if (event.button === 1) { // 1 representa el clic central del mouse (scroll click)
+                            event.preventDefault(); // Evita que aparezca el cursor de scroll automático del navegador
+                            this.remove();
+                        }
                     });
 
                     previewSheet.appendChild(priceTag);
